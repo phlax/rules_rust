@@ -1222,7 +1222,7 @@ def rust_repository_set(
     # Register toolchains
     if register_toolchain:
         native.register_toolchains(*toolchain_labels)
-        native.register_toolchains(str(Label("//rust/private/dummy_cc_toolchain:dummy_cc_wasm32_toolchain")))
-        native.register_toolchains(str(Label("//rust/private/dummy_cc_toolchain:dummy_cc_wasm64_toolchain")))
+        # native.register_toolchains(str(Label("//rust/private/dummy_cc_toolchain:dummy_cc_wasm32_toolchain")))
+        # native.register_toolchains(str(Label("//rust/private/dummy_cc_toolchain:dummy_cc_wasm64_toolchain")))
 
     return all_toolchain_details
