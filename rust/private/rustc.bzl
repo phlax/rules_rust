@@ -1047,7 +1047,7 @@ def construct_arguments(
 
     if toolchain.llvm_cov and ctx.configuration.coverage_enabled:
         # https://doc.rust-lang.org/rustc/instrument-coverage.html
-        pass
+        rustc_flags.add("--codegen=instrument-coverage")
 
     if toolchain._experimental_link_std_dylib:
         rustc_flags.add("--codegen=prefer-dynamic")
@@ -1550,7 +1550,7 @@ def rustc_compile_action(
         })
         crate_info = rust_common.create_crate_info(**crate_info_dict)
 
-    if crate_info.type in ["staticlib", "cdylib"] and not out_binary:
+    if crate_info.type in ["staticlib", "cdylib"]:
         # These rules are not supposed to be depended on by other rust targets, and
         # as such they shouldn't provide a CrateInfo. However, one may still want to
         # write a rust_test for them, so we provide the CrateInfo wrapped in a provider
