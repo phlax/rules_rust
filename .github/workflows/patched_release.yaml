@@ -1,10 +1,9 @@
----
 name: Patched Release
 on:
   workflow_dispatch:
   push:
     branches:
-      - 56-fix-nested-namespacing
+    - 56-fix-nested-namespacing
 
 defaults:
   run:
@@ -46,7 +45,7 @@ jobs:
             env:
               TARGET: "x86_64-unknown-linux-musl"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install rust toolchains for host
         run: |
           # Detect the current version of rust
@@ -79,7 +78,7 @@ jobs:
             bazel ${BAZEL_STARTUP_FLAGS[@]} run //crate_universe/tools/cross_installer -- --target=${TARGET} --output="${OUTPUT_PATH}"
         env:
           TARGET: "${{ matrix.env.TARGET }}"
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: "${{ matrix.env.TARGET }}"
           path: ${{ github.workspace }}/crate_universe/target/artifacts/${{ matrix.env.TARGET }}
@@ -88,8 +87,8 @@ jobs:
     needs: builds
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
         with:
           path: ${{ github.workspace }}/crate_universe/target/artifacts
       - name: Detect the current version
@@ -125,7 +124,7 @@ jobs:
           URL_PREFIX: https://github.com/${{ github.repository_owner }}/rules_rust/releases/download/${{ env.RELEASE_VERSION }}
 
       # Upload the artifact in case creating a release fails so all artifacts can then be manually recovered.
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: "rules_rust.tar.gz"
           path: ${{ github.workspace }}/.github/rules_rust.tar.gz
@@ -135,14 +134,14 @@ jobs:
           # Generate custom release notes for the patched version
           cat > ${{ github.workspace }}/.github/release_notes.txt << EOF
           # Patched Release: v${{ env.RELEASE_VERSION }}
-          
+
           This is a patched version of rules_rust v0.56.0 that includes a fix for nested workspace lockfile checksums.
-          
+
           ## Fix included:
           - Fix for [#2125](https://github.com/bazelbuild/rules_rust/issues/2125): crates_repository lockfile hash doesn't match in nested workspaces
-          
+
           ## Usage in Bazel:
-          
+
           \`\`\`python
           http_archive(
               name = "rules_rust",
@@ -150,7 +149,7 @@ jobs:
               urls = ["https://github.com/${{ github.repository_owner }}/rules_rust/releases/download/${{ env.RELEASE_VERSION }}/rules_rust-${{ env.RELEASE_VERSION }}.tar.gz"],
           )
           \`\`\`
-          
+
           ## Changes:
           - Normalized splicing metadata before hashing to exclude workspace-specific paths
           - Ensures consistent lockfile checksums between nested and outer workspaces
